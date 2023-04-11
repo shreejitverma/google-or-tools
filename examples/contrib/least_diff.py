@@ -46,7 +46,7 @@ def main(unused_argv):
   #
   # declare variables
   #
-  digits = list(range(0, 10))
+  digits = list(range(10))
   a = solver.IntVar(digits, "a")
   b = solver.IntVar(digits, "b")
   c = solver.IntVar(digits, "c")
@@ -62,7 +62,7 @@ def main(unused_argv):
   letters = [a, b, c, d, e, f, g, h, i, j]
 
   digit_vector = [10000, 1000, 100, 10, 1]
-  x = solver.ScalProd(letters[0:5], digit_vector)
+  x = solver.ScalProd(letters[:5], digit_vector)
   y = solver.ScalProd(letters[5:], digit_vector)
   diff = x - y
 

@@ -58,7 +58,7 @@ def main():
   #
   # variables
   #
-  LD = [solver.IntVar(0, 9, "LD[%i]" % i) for i in range(0, 10)]
+  LD = [solver.IntVar(0, 9, "LD[%i]" % i) for i in range(10)]
   A, B, C, D, E, F, G, H, I, J = LD
 
   Sr1 = solver.IntVar(0, 1, "Sr1")

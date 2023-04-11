@@ -37,8 +37,8 @@ def main(_):
     solver = pywrapcp.Solver('golomb ruler')
 
     size = 8
-    var_max = size * size
-    all_vars = list(range(0, size))
+    var_max = size**2
+    all_vars = list(range(size))
 
     marks = [solver.IntVar(0, var_max, 'marks_%d' % i) for i in all_vars]
 
@@ -49,8 +49,7 @@ def main(_):
     # We expand the creation of the diff array to avoid a pylint warning.
     diffs = []
     for i in range(size - 1):
-        for j in range(i + 1, size):
-            diffs.append(marks[j] - marks[i])
+        diffs.extend(marks[j] - marks[i] for j in range(i + 1, size))
     solver.Add(solver.AllDifferent(diffs))
 
     solver.Add(marks[size - 1] - marks[size - 2] > marks[1] - marks[0])
@@ -64,7 +63,7 @@ def main(_):
     solver.Solve(
         solver.Phase(marks, solver.CHOOSE_FIRST_UNBOUND,
                      solver.ASSIGN_MIN_VALUE), [objective, collector])
-    for i in range(0, collector.SolutionCount()):
+    for i in range(collector.SolutionCount()):
         obj_value = collector.Value(i, marks[size - 1])
         time = collector.WallTime(i)
         branches = collector.Branches(i)

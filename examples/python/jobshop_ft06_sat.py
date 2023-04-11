@@ -35,8 +35,8 @@ def jobshop_ft06():
 
     machines_count = 6
     jobs_count = 6
-    all_machines = range(0, machines_count)
-    all_jobs = range(0, jobs_count)
+    all_machines = range(machines_count)
+    all_jobs = range(jobs_count)
 
     durations = [[1, 3, 6, 7, 3, 6], [8, 5, 10, 10, 10, 4], [5, 4, 8, 9, 1, 7],
                  [5, 5, 5, 3, 8, 9], [9, 3, 5, 4, 3, 1], [3, 3, 9, 10, 4, 1]]
@@ -45,7 +45,7 @@ def jobshop_ft06():
                 [1, 0, 2, 3, 4, 5], [2, 1, 4, 5, 0, 3], [1, 3, 5, 0, 4, 2]]
 
     # Computes horizon dynamically.
-    horizon = sum([sum(durations[i]) for i in all_jobs])
+    horizon = sum(sum(durations[i]) for i in all_jobs)
 
     task_type = collections.namedtuple('task_type', 'start end interval')
 
@@ -67,15 +67,17 @@ def jobshop_ft06():
     for i in all_machines:
         machines_jobs = []
         for j in all_jobs:
-            for k in all_machines:
-                if machines[j][k] == i:
-                    machines_jobs.append(all_tasks[(j, k)].interval)
+            machines_jobs.extend(
+                all_tasks[(j, k)].interval
+                for k in all_machines
+                if machines[j][k] == i
+            )
         machine_to_jobs[i] = machines_jobs
         model.AddNoOverlap(machines_jobs)
 
     # Precedences inside a job.
     for i in all_jobs:
-        for j in range(0, machines_count - 1):
+        for j in range(machines_count - 1):
             model.Add(all_tasks[(i, j + 1)].start >= all_tasks[(i, j)].end)
 
     # Makespan objective.

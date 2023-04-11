@@ -42,8 +42,8 @@ def jobshop_ft06_distance():
 
     machines_count = 6
     jobs_count = 6
-    all_machines = range(0, machines_count)
-    all_jobs = range(0, jobs_count)
+    all_machines = range(machines_count)
+    all_jobs = range(jobs_count)
 
     durations = [[1, 3, 6, 7, 3, 6], [8, 5, 10, 10, 10, 4], [5, 4, 8, 9, 1, 7],
                  [5, 5, 5, 3, 8, 9], [9, 3, 5, 4, 3, 1], [3, 3, 9, 10, 4, 1]]
@@ -88,10 +88,12 @@ def jobshop_ft06_distance():
         for j1 in range(len(job_intervals)):
             # Initial arc from the dummy node (0) to a task.
             start_lit = model.NewBoolVar('%i is first job' % j1)
-            arcs.append([0, j1 + 1, start_lit])
-            # Final arc from an arc to the dummy node.
-            arcs.append([j1 + 1, 0, model.NewBoolVar('%i is last job' % j1)])
-
+            arcs.extend(
+                (
+                    [0, j1 + 1, start_lit],
+                    [j1 + 1, 0, model.NewBoolVar('%i is last job' % j1)],
+                )
+            )
             for j2 in range(len(job_intervals)):
                 if j1 == j2:
                     continue
@@ -109,7 +111,7 @@ def jobshop_ft06_distance():
 
     # Precedences inside a job.
     for i in all_jobs:
-        for j in range(0, machines_count - 1):
+        for j in range(machines_count - 1):
             model.Add(all_tasks[(i, j + 1)].start >= all_tasks[(i, j)].end)
 
     # Makespan objective.

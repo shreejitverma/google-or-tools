@@ -82,7 +82,7 @@ def regular(x, Q, S, d, q0, F):
   # (q0), and a[i+1] holds the state we're in after processing
   # x[i].  If a[n] is in F, then we succeed (ie. accept the
   # string).
-  x_range = list(range(0, len(x)))
+  x_range = list(range(len(x)))
   m = 0
   n = len(x)
 
@@ -203,7 +203,7 @@ def main():
     #       Using atleast constraints is much harder
     #       in this model.
     #
-    if j % 7 == 5 or j % 7 == 6:
+    if j % 7 in [5, 6]:
       # special constraints for the weekends
       solver.Add(day_stat[j, day_shift] == 2)
       solver.Add(day_stat[j, night_shift] == 1)

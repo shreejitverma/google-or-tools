@@ -42,7 +42,7 @@ def solve_golomb_ruler(order, params):
     model = cp_model.CpModel()
 
     var_max = order * order
-    all_vars = list(range(0, order))
+    all_vars = list(range(order))
 
     marks = [model.NewIntVar(0, var_max, f'marks_{i}') for i in all_vars]
 
